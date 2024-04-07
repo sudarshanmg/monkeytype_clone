@@ -14,7 +14,7 @@ const Textarea = () => {
     char_count.push(word.length);
   });
 
-  const time = 15000;
+  const time_in_seconds = 15;
   const [activeWord, setActiveWord] = useState(0);
   const [activeChar, setActiveChar] = useState(0);
   const [start, setStart] = useState(false);
@@ -79,7 +79,7 @@ const Textarea = () => {
   return (
     <div className="flex flex-col font-mono h-full w-full">
       {!isFinished && start && (
-        <Timer duration={5} setIsFinished={setIsFinished} />
+        <Timer duration={time_in_seconds} setIsFinished={setIsFinished} />
       )}
       <section className="p-4 font-mono text-2xl m-8 text-justify">
         {!isFinished ? (
@@ -100,7 +100,7 @@ const Textarea = () => {
           <>
             <div className="text-xl">Done!</div>
             <div className="text-yellow-300 text-3xl">{`Speed: ${
-              (correctWords * 60) / 15
+              (correctWords * 60) / time_in_seconds
             } wpm`}</div>
             <div>{`Correct words typed: ${correctWords} / ${words.length}`}</div>
             <div>{`Accuracy: ${
