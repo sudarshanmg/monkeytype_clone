@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { texts } from '@/lib/text';
+import text from '@/lib/text';
 import {
   calculateSpeed,
   calculateAccuracy,
@@ -18,7 +18,6 @@ const Textarea = () => {
   const time_in_seconds = 15;
 
   // text to be typed
-  const text = texts[2];
   const words = text.split(' ');
 
   // start the timer
@@ -49,7 +48,6 @@ const Textarea = () => {
             ...prev,
             calculateSpeed(correctWords, timeElapsed),
           ]);
-          console.log(wpm);
         }, 1000);
       }
     };
