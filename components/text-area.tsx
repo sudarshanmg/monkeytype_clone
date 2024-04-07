@@ -5,6 +5,11 @@ import { texts } from '@/lib/text';
 import classes from './text-area.module.css';
 import Timer from './timer';
 
+// function getRandomElement(arr: string[]) {
+//   const randomIndex = Math.floor(Math.random() * arr.length);
+//   return arr[randomIndex];
+// }
+
 const Textarea = () => {
   const text = texts[1];
   const words = text.split(' ');
@@ -83,17 +88,13 @@ const Textarea = () => {
       )}
       <section className="p-4 font-mono text-2xl m-8 text-justify">
         {!isFinished ? (
-          texts.map((text, index) => (
-            <div key={index}>
-              {text.split(' ').map((word, wordIndex) => (
-                <div key={wordIndex} className="inline word">
-                  {word.split('').map((letter, letterIndex) => (
-                    <span key={letterIndex} className="inline letter">
-                      {letter}
-                    </span>
-                  ))}{' '}
-                </div>
-              ))}
+          text.split(' ').map((word, wordIndex) => (
+            <div key={wordIndex} className="inline word">
+              {word.split('').map((letter, letterIndex) => (
+                <span key={letterIndex} className="inline letter">
+                  {letter}
+                </span>
+              ))}{' '}
             </div>
           ))
         ) : (
@@ -103,7 +104,7 @@ const Textarea = () => {
               (correctWords * 60) / time_in_seconds
             } wpm`}</div>
             <div>{`Correct words typed: ${correctWords} / ${words.length}`}</div>
-            <div>{`Accuracy: ${
+            <div>{`Accuracy: ${(
               (correctWords /
                 (activeWord == 0
                   ? activeWord + 1
@@ -111,7 +112,7 @@ const Textarea = () => {
                   ? activeWord
                   : activeWord + 1)) *
               100
-            }%`}</div>
+            ).toFixed(2)}%`}</div>
           </>
         )}
       </section>
