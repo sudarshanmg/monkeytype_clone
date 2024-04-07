@@ -6,7 +6,7 @@ import classes from './text-area.module.css';
 import Timer from './timer';
 
 const Textarea = () => {
-  const text = texts[0];
+  const text = texts[1];
   const words = text.split(' ');
   const char_count: number[] = [];
 
