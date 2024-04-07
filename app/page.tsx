@@ -1,4 +1,3 @@
-import React from 'react';
 import Textarea from '@/components/text-area';
 
 const Home = () => {

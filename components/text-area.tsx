@@ -2,35 +2,73 @@
 
 import { useEffect, useState } from 'react';
 import { texts } from '@/lib/text';
-import classes from './text-area.module.css';
+import {
+  calculateSpeed,
+  calculateAccuracy,
+  calculateConsistency,
+} from '@/lib/metrics';
 import Timer from './timer';
 
-// function getRandomElement(arr: string[]) {
-//   const randomIndex = Math.floor(Math.random() * arr.length);
-//   return arr[randomIndex];
-// }
+function getRandomElement(arr: string[]) {
+  const randomIndex = Math.floor(Math.random() * arr.length);
+  return arr[randomIndex];
+}
 
 const Textarea = () => {
-  const text = texts[1];
-  const words = text.split(' ');
-  const char_count: number[] = [];
-
-  text.split(' ').map((word) => {
-    char_count.push(word.length);
-  });
-
   const time_in_seconds = 15;
-  const [activeWord, setActiveWord] = useState(0);
-  const [activeChar, setActiveChar] = useState(0);
+
+  // text to be typed
+  const text = getRandomElement(texts);
+  const words = text.split(' ');
+
+  // start the timer
   const [start, setStart] = useState(false);
-  const [correctWords, setCorrectWords] = useState(0);
-  const [correctChars, setCorrectChars] = useState(0);
+
+  // end the test
   const [isFinished, setIsFinished] = useState(false);
 
+  // progression
+  const [activeWord, setActiveWord] = useState(0);
+  const [activeChar, setActiveChar] = useState(0);
+
+  // evaluate
+  const [correctWords, setCorrectWords] = useState<number>(0);
+  const [correctChars, setCorrectChars] = useState(0);
+
+  // speed
+  const [wpm, setWpm] = useState<number[]>([]);
+  const [timeElapsed, setTimeElapsed] = useState<number>(1);
+
   useEffect(() => {
-    const ignoreKeys = ['Control', 'Alt', 'AltGraph'];
+    let timer: any;
+    const setTimer = () => {
+      if (start) {
+        timer = setInterval(() => {
+          setTimeElapsed((prev) => prev + 1);
+          setWpm((prev) => [
+            ...prev,
+            calculateSpeed(correctWords, timeElapsed),
+          ]);
+          console.log(wpm);
+        }, 1000);
+      }
+    };
+    setTimer();
+
+    if (isFinished) {
+      clearInterval(timer);
+    }
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, [start, timeElapsed, correctWords, isFinished, wpm]);
+
+  useEffect(() => {
+    const ignoreKeys = ['Control', 'Alt', 'AltGraph', 'Shift', 'Enter'];
     const handleKeyDown = (event: KeyboardEvent) => {
       setStart(true);
+
       if (!ignoreKeys.includes(event.key)) {
         if (event.key == ' ') {
           if (activeWord >= 0 && activeChar != 0) {
@@ -46,12 +84,17 @@ const Textarea = () => {
           const letter = word.getElementsByClassName('letter')[activeChar];
           if (event.key == words[activeWord][activeChar]) {
             setCorrectChars((prev) => prev + 1);
-            letter.classList.add(classes.correct);
+            letter.classList.add('text-green-400');
           } else {
             if (activeChar >= words[activeWord].length) {
               const extraLetter = document.createElement('span');
               extraLetter.appendChild(document.createTextNode(event.key));
-              extraLetter.classList.add('inline', 'letter', classes.incorrect);
+              extraLetter.classList.add(
+                'inline',
+                'letter',
+                'text-red-400',
+                'underline'
+              );
               word.insertBefore(
                 extraLetter,
                 word.getElementsByClassName('letter')[activeChar - 1]
@@ -59,13 +102,14 @@ const Textarea = () => {
               );
               setCorrectChars(0);
             } else {
-              letter.classList.add(classes.incorrect);
+              letter.classList.add('text-red-400');
               setCorrectChars(0);
             }
           }
           if (correctChars == words[activeWord].length - 1) {
             setCorrectWords((prev) => prev + 1);
           }
+
           setActiveChar((prev) => prev + 1);
         }
       }
@@ -79,19 +123,34 @@ const Textarea = () => {
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [activeWord, activeChar, words, isFinished, correctChars]);
+  }, [
+    activeWord,
+    activeChar,
+    words,
+    isFinished,
+    correctChars,
+    correctWords,
+    start,
+  ]);
 
   return (
     <div className="flex flex-col font-mono h-full w-full">
-      {!isFinished && start && (
-        <Timer duration={time_in_seconds} setIsFinished={setIsFinished} />
+      {!isFinished && (
+        <Timer
+          duration={time_in_seconds}
+          start={start}
+          setIsFinished={setIsFinished}
+        />
       )}
       <section className="p-4 font-mono text-2xl m-8 text-justify">
         {!isFinished ? (
           text.split(' ').map((word, wordIndex) => (
             <div key={wordIndex} className="inline word">
               {word.split('').map((letter, letterIndex) => (
-                <span key={letterIndex} className="inline letter">
+                <span
+                  key={`${wordIndex}-${letterIndex}`}
+                  className="inline letter"
+                >
                   {letter}
                 </span>
               ))}{' '}
@@ -100,19 +159,17 @@ const Textarea = () => {
         ) : (
           <>
             <div className="text-xl">Done!</div>
-            <div className="text-yellow-300 text-3xl">{`Speed: ${
-              (correctWords * 60) / time_in_seconds
-            } wpm`}</div>
+            <div className="text-yellow-300 text-3xl">{`Speed: ${calculateSpeed(
+              correctWords,
+              time_in_seconds
+            )} wpm`}</div>
             <div>{`Correct words typed: ${correctWords} / ${words.length}`}</div>
-            <div>{`Accuracy: ${(
-              (correctWords /
-                (activeWord == 0
-                  ? activeWord + 1
-                  : activeChar == 0
-                  ? activeWord
-                  : activeWord + 1)) *
-              100
-            ).toFixed(2)}%`}</div>
+            <div>{`Accuracy: ${calculateAccuracy(
+              correctWords,
+              activeWord,
+              activeChar
+            )}%`}</div>
+            <div>{`Consistency: ${calculateConsistency(wpm)}%`}</div>
           </>
         )}
       </section>
