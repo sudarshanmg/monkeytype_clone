@@ -1,36 +1,53 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Typing Test Application
 
-## Getting Started
+This is a typing test application built with React. Users can practice their typing speed and accuracy by typing the displayed text within a given time limit.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Users can see a passage of text to type.
+- Timer counts down from a specified duration.
+- Words and letters are highlighted as the user types.
+- Calculates typing speed (words per minute) and accuracy.
+- Displays results after the test is completed.
+- Consistency is calculated as well
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Technologies Used
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Next JS
+- React.js
+- TypeScript
+- Tailwind CSS
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Installation
 
-## Learn More
+1. Clone the repository:
 
-To learn more about Next.js, take a look at the following resources:
+   ```bash
+   git clone https://github.com/sudarshanmg/monkeytype_clone.git
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. Navigate into the project directory:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+   ```bash
+   cd monkeytype_clone
+   ```
 
-## Deploy on Vercel
+3. Install dependencies:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   ```bash
+   npm install
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+4. Run the development server:
+
+   ```bash
+   npm run dev
+   ```
+
+5. Open your browser and visit `http://localhost:3000` to view the application.
+
+## Usage
+
+- Start typing the displayed passage of text.
+- Words will be highlighted as you type.
+- After finishing, your typing speed (WPM), accuracy and consistency will be displayed.
