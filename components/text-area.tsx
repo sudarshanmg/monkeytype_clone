@@ -18,7 +18,7 @@ const Textarea = () => {
   const time_in_seconds = 15;
 
   // text to be typed
-  const text = getRandomElement(texts);
+  const text = texts[2];
   const words = text.split(' ');
 
   // start the timer
